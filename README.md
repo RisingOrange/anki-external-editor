@@ -1,6 +1,6 @@
 # External Editor for Anki
 
-![Configuration](/screenshots/configuration.png)
+![Configuration](/screenshots/editing.png)
 
 Replaces built-in html editor with the one of your choice.
 
