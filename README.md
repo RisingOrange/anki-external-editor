@@ -1,4 +1,6 @@
-# anki-external_editor
+# External Editor for Anki
+
+![Editing](/screenshots/editing.png)
 
 Replaces built-in html editor with the one of your choice.
 
@@ -18,3 +20,4 @@ Restart Anki to finish installation.
 
 You can change the editor by clicking in "Config".
 
+![Configuration](/screenshots/configuration.png)
