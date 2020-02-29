@@ -1,17 +1,15 @@
 from distutils.spawn import find_executable
 import tempfile
 import subprocess
-import io
 
 import aqt
 from aqt import mw
 
 
 def edit(text, cmd):
-    tmp = tempfile.NamedTemporaryFile(suffix=".html")
-    filename = tmp.name
+    filename = tempfile.mktemp(suffix=".html")
 
-    with io.open(filename, mode='wt') as file:
+    with open(filename, "wt") as file:
         file.write(text)
 
     cmd_list = cmd.split() + [filename]
@@ -19,7 +17,7 @@ def edit(text, cmd):
     proc = subprocess.Popen(cmd_list, close_fds=True)
     proc.communicate()
 
-    with io.open(filename, mode='rt') as file:
+    with open(filename, "rt") as file:
         return file.read()
 
 
