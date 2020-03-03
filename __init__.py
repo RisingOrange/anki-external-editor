@@ -14,6 +14,7 @@ def get_editor():
     user_choice = config.get("editor")
     editors = [
         user_choice,
+        user_choice + ".exe",
         "notepad++.exe",
         "notepad.exe",
         "gvim",
