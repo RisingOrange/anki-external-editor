@@ -17,7 +17,7 @@ def get_editor():
         user_choice + ".exe",
         "notepad++.exe",
         "notepad.exe",
-        "gvim",
+        "gvim -f",
         "vim -gf",
         "atom",
         "atom.exe",
