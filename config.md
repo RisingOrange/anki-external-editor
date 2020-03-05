@@ -11,6 +11,9 @@
 If the specified editor could not be found, it'll try to make an educated guess.
 
 In Windows remember to escape backslashes, write them twice:
-```{
+
+```
+{
     "editor": "C:\\Windows\\sol.exe"
-}```
+}
+```
