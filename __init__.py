@@ -62,4 +62,3 @@ def edit_with_external_editor(self, field):
 
 
 aqt.editor.Editor._onHtmlEdit = edit_with_external_editor
-
