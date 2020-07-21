@@ -1,3 +1,4 @@
+import io
 from distutils.spawn import find_executable
 import os
 import tempfile
@@ -42,14 +43,14 @@ def edit(text):
     editor = get_editor()
     filename = tempfile.mktemp(suffix=".html")
 
-    with open(filename, "wt") as file:
+    with io.open(filename, 'w', encoding='utf-8') as file:
         file.write(text)
 
     cmd_list = editor.split() + [filename]
     proc = subprocess.Popen(cmd_list, close_fds=True)
     proc.communicate()
 
-    with open(filename, "rt") as file:
+    with io.open(filename, 'r', encoding='utf-8') as file:
         return file.read()
 
 
