@@ -1,4 +1,5 @@
 from distutils.spawn import find_executable
+import os
 import tempfile
 import subprocess
 import sys
@@ -12,6 +13,8 @@ BUILTIN_EDITOR = aqt.editor.Editor._onHtmlEdit
 def get_editor():
     config = mw.addonManager.getConfig(__name__)
     user_choice = config.get("editor")
+    if os.path.isfile(user_choice) and os.access(user_choice, os.X_OK):
+        return user_choice
     editors = [
         user_choice,
         user_choice + ".exe",
