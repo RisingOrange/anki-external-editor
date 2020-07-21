@@ -59,7 +59,8 @@ def edit_with_external_editor(self, field):
     try:
         text = edit(text)
         self.note.fields[field] = text
-        self.note.flush()
+        if not self.addMode:
+            self.note.flush()
         self.loadNote(focusTo=field)
     except RuntimeError:
         return BUILTIN_EDITOR(self, field)
