@@ -1,4 +1,6 @@
+import io
 from distutils.spawn import find_executable
+import os
 import tempfile
 import subprocess
 import sys
@@ -12,6 +14,8 @@ BUILTIN_EDITOR = aqt.editor.Editor._onHtmlEdit
 def get_editor():
     config = mw.addonManager.getConfig(__name__)
     user_choice = config.get("editor")
+    if os.path.isfile(user_choice) and os.access(user_choice, os.X_OK):
+        return user_choice
     editors = [
         user_choice,
         user_choice + ".exe",
@@ -39,14 +43,14 @@ def edit(text):
     editor = get_editor()
     filename = tempfile.mktemp(suffix=".html")
 
-    with open(filename, "wt") as file:
+    with io.open(filename, 'w', encoding='utf-8') as file:
         file.write(text)
 
     cmd_list = editor.split() + [filename]
     proc = subprocess.Popen(cmd_list, close_fds=True)
     proc.communicate()
 
-    with open(filename, "rt") as file:
+    with io.open(filename, 'r', encoding='utf-8') as file:
         return file.read()
 
 
@@ -55,7 +59,8 @@ def edit_with_external_editor(self, field):
     try:
         text = edit(text)
         self.note.fields[field] = text
-        self.note.flush()
+        if not self.addMode:
+            self.note.flush()
         self.loadNote(focusTo=field)
     except RuntimeError:
         return BUILTIN_EDITOR(self, field)
