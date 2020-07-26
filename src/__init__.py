@@ -1,26 +1,29 @@
 import io
-from distutils.spawn import find_executable
 import os
 import tempfile
 import subprocess
 import sys
 
-import aqt
-from aqt import mw
-
-BUILTIN_EDITOR = aqt.editor.Editor._onHtmlEdit
+from .utils import is_executable, find_executable
+try:
+    import aqt
+    from aqt import mw
+    BUILTIN_EDITOR = aqt.editor.Editor._onHtmlEdit
+except ImportError:
+    BUILTIN_EDITOR = None
 
 
 def get_editor():
     config = mw.addonManager.getConfig(__name__)
     user_choice = config.get("editor")
-    if os.path.isfile(user_choice) and os.access(user_choice, os.X_OK):
+    if is_executable(user_choice):
         return user_choice
     editors = [
         user_choice,
         user_choice + ".exe",
         "notepad++.exe",
         "notepad.exe",
+        "code --wait",
         "gvim -f",
         "vim -gf",
         "atom",
@@ -30,11 +33,9 @@ def get_editor():
     if sys.platform == "darwin":
         editors.append("open -t")
     for editor in editors:
-        command = editor.split()
-        executable = find_executable(command[0])
-        if executable:
-            command[0] = executable
-            return " ".join(command)
+        command = find_executable(editor)
+        if command:
+            return command
 
     raise RuntimeError("Could not find external editor")
 
@@ -66,4 +67,5 @@ def edit_with_external_editor(self, field):
         return BUILTIN_EDITOR(self, field)
 
 
-aqt.editor.Editor._onHtmlEdit = edit_with_external_editor
+if BUILTIN_EDITOR:
+    aqt.editor.Editor._onHtmlEdit = edit_with_external_editor
