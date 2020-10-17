@@ -1,3 +1,7 @@
 external_editor.ankiaddon
 meta.json
 /.idea/
+.deps
+__pycache__
+tags
+build/
