@@ -1,0 +1,11 @@
+{
+    "display_name": "External editor",
+    "module_name": "anki-external-editor",
+    "repo_name": "anki-external-editor",
+    "ankiweb_id": "",
+    "author": "RisingOrange",
+    "conflicts": [],
+    "targets": [
+        "anki21"
+    ]
+}
