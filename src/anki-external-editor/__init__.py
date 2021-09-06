@@ -1,16 +1,12 @@
 import io
-import os
-import tempfile
 import subprocess
 import sys
+import tempfile
 
-from .utils import is_executable, find_executable
-try:
-    import aqt
-    from aqt import mw
-    BUILTIN_EDITOR = aqt.editor.Editor._onHtmlEdit
-except ImportError:
-    BUILTIN_EDITOR = None
+from aqt import mw
+from aqt.hooks_gen import editor_did_init_shortcuts
+
+from .utils import find_executable, is_executable
 
 
 def get_editor():
@@ -55,17 +51,17 @@ def edit(text):
         return file.read()
 
 
-def edit_with_external_editor(self, field):
-    text = self.note.fields[field]
-    try:
-        text = edit(text)
-        self.note.fields[field] = text
-        if not self.addMode:
-            self.note.flush()
-        self.loadNote(focusTo=field)
-    except RuntimeError:
-        return BUILTIN_EDITOR(self, field)
+def edit_with_external_editor(editor):
+    text = editor.note.fields[editor.currentField]
+    text = edit(text)
+    editor.note.fields[editor.currentField] = text
+    if not editor.addMode:
+        editor.note.flush()
+    editor.loadNote(focusTo=editor.currentField)
 
 
-if BUILTIN_EDITOR:
-    aqt.editor.Editor._onHtmlEdit = edit_with_external_editor
+def add_shortcut(shortcuts, editor):
+    shortcuts.append(("Ctrl+Alt+E", lambda: edit_with_external_editor(editor)))
+
+
+editor_did_init_shortcuts.append(add_shortcut)
