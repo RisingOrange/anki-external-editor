@@ -13,7 +13,7 @@ It allows you to specify your editor of preference.
 
 In Anki 2.1, menu: *Tools/Add-ons*, click *Get Add-ons...*, and enter:
 ```
-16727059
+704320065
 ```
 
 Restart Anki to finish installation.
