@@ -61,7 +61,9 @@ def edit_with_external_editor(editor):
 
 
 def add_shortcut(shortcuts, editor):
-    shortcuts.append(("Ctrl+Alt+E", lambda: edit_with_external_editor(editor)))
+    config = mw.addonManager.getConfig(__name__)
+    shortcut = config.get("shortcut")
+    shortcuts.append((shortcut, lambda: edit_with_external_editor(editor)))
 
 
 editor_did_init_shortcuts.append(add_shortcut)

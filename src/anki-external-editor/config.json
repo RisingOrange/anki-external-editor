@@ -1,3 +1,4 @@
 {
-  "editor": "notepad++.exe"
+  "editor": "notepad++.exe",
+  "shortcut": "Ctrl+Alt+E"
 }
