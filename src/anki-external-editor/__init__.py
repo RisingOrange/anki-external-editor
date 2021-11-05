@@ -15,7 +15,7 @@ def get_editor():
     if isinstance(user_choice, list):
         command = find_executable(user_choice[0])
         if command:
-            return [command] + user_choice[slice(1, len(user_choice))]
+            return [command] + user_choice[1:]
     elif is_executable(user_choice):
         return [user_choice]
     else:
