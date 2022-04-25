@@ -42,7 +42,6 @@ def find_executable(cmd):
 
     executable, options = split_exec_options(cmd)
 
-    # shortcicuit is already a valid abs or rel path
     if os.path.dirname(executable):
         if is_executable(executable):
             return cmd
@@ -56,6 +55,7 @@ def find_executable(cmd):
             path = os.defpath
     if not path:
         return None
+
     path = os.fsdecode(path)
     path = path.split(os.pathsep)
 
@@ -73,13 +73,9 @@ def find_executable(cmd):
     else:
         filenames = [executable]
 
-    seen = set()
     for dir in path:
-        if not dir in seen:
-            seen.add(dir)
-            for filename in filenames:
-                filepath = os.path.join(dir, filename)
-                if is_executable(filepath):
-                    return filepath + options
+        for filename in filenames:
+            filepath = os.path.join(dir, filename)
+            if is_executable(filepath):
+                return filepath + options
     return None
-
