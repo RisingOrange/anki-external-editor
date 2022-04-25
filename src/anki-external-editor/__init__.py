@@ -4,7 +4,7 @@ import sys
 import tempfile
 
 from aqt import mw
-from aqt.hooks_gen import editor_did_init_shortcuts
+from aqt.gui_hooks import editor_did_init_shortcuts
 
 from .utils import find_executable, is_executable
 
