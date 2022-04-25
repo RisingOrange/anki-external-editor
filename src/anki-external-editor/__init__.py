@@ -4,7 +4,7 @@ import sys
 import tempfile
 
 from aqt import mw
-from aqt.gui_hooks import editor_did_init_shortcuts
+from aqt.gui_hooks import editor_did_init_shortcuts, profile_did_open
 
 from .utils import find_executable, is_executable
 
@@ -66,8 +66,22 @@ def edit_with_external_editor(editor):
 
 def add_shortcut(shortcuts, editor):
     config = mw.addonManager.getConfig(__name__)
-    shortcut = config.get("shortcut")
+    shortcut = config["shortcut"]
     shortcuts.append((shortcut, lambda: edit_with_external_editor(editor)))
 
 
 editor_did_init_shortcuts.append(add_shortcut)
+
+
+def replace_ctrl_with_cmd_for_mac():
+    config = mw.addonManager.getConfig(__name__)
+    shortcut = config["shortcut"]
+
+    if not (sys.platform == "darwin" and "Ctrl" in shortcut):
+        return
+
+    config["shortcut"] = shortcut.replace("Ctrl", "Cmd")
+    mw.addonManager.writeConfig(__name__, config)
+
+
+profile_did_open.append(replace_ctrl_with_cmd_for_mac)
