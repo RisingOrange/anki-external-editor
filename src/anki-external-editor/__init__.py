@@ -67,6 +67,11 @@ def edit_with_external_editor(editor):
 def add_shortcut(shortcuts, editor):
     config = mw.addonManager.getConfig(__name__)
     shortcut = config["shortcut"]
+
+    # On Mac Anki sees pressing the Cmd key as pressing Ctrl
+    if sys.platform == "darwin":
+        shortcut = shortcut.lower().replace("cmd", "ctrl")
+
     shortcuts.append((shortcut, lambda: edit_with_external_editor(editor)))
 
 
@@ -74,13 +79,17 @@ editor_did_init_shortcuts.append(add_shortcut)
 
 
 def replace_ctrl_with_cmd_for_mac():
+
+    # the shortcut needs to be changed back to ctrl later because
+    # on Mac Anki sees pressing the Cmd key as pressing Ctrl
+
     config = mw.addonManager.getConfig(__name__)
     shortcut = config["shortcut"]
 
-    if not (sys.platform == "darwin" and "Ctrl" in shortcut):
+    if not (sys.platform == "darwin" and "ctrl" in shortcut.lower()):
         return
 
-    config["shortcut"] = shortcut.replace("Ctrl", "Cmd")
+    config["shortcut"] = shortcut.lower().replace("ctrl", "cmd")
     mw.addonManager.writeConfig(__name__, config)
 
 
