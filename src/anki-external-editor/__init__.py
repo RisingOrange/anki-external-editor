@@ -42,8 +42,9 @@ def get_editor():
 
 
 def edit(text):
+    config = mw.addonManager.getConfig(__name__)
     editor = get_editor()
-    filename = tempfile.mktemp(suffix=".html")
+    filename = tempfile.mktemp(suffix=f".{config.get('file_extension', 'html')}")
 
     with io.open(filename, "w", encoding="utf-8") as file:
         file.write(text)

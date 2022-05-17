@@ -1,4 +1,5 @@
 {
   "editor": "notepad++.exe",
-  "shortcut": "Ctrl+Alt+X"
+  "shortcut": "Ctrl+Alt+X",
+  "file_extension": "html"
 }
