@@ -49,8 +49,12 @@ def edit(text):
     with io.open(filename, "w", encoding="utf-8") as file:
         file.write(text)
 
-    proc = subprocess.Popen(f"{editor} {filename}", close_fds=True, shell=True)
-    proc.communicate()
+    proc = subprocess.Popen(f"{editor} {filename}", close_fds=True,
+                            shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (stdout, stderr) = proc.communicate()
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Error while trying to edit {filename} with {editor}:\nstdout\n{stdout.decode()}\nstderr\n{stderr.decode()}")
 
     with io.open(filename, "r", encoding="utf-8") as file:
         return file.read()
