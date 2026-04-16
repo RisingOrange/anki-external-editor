@@ -6,7 +6,11 @@ RE_ESCAPED_END = re.compile(r".*?(\\*)$")
 
 
 def is_executable(cmd):
-    return os.path.exists(cmd) and os.access(cmd, os.X_OK)
+    if not os.path.exists(cmd):
+        return False
+    if sys.platform == "win32":
+        return True
+    return os.access(cmd, os.X_OK)
 
 
 def escaping_end(word):
@@ -21,15 +25,25 @@ def split_exec_options(cmd):
     executable = ""
     options = ""
 
+    # On Windows, backslash is a path separator, not an escape character.
+    use_backslash_escape = sys.platform != "win32"
     escape = False
+    quote = None
     for char in cmd:
         if options:
             options += char
         elif escape:
             escape = False
             executable += char
-        elif char == "\\":
+        elif quote:
+            if char == quote:
+                quote = None
+            else:
+                executable += char
+        elif use_backslash_escape and char == "\\":
             escape = True
+        elif char in ('"', "'"):
+            quote = char
         elif char == " ":
             options += char
         else:

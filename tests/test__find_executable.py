@@ -3,12 +3,18 @@ import sys
 
 from pytest import fixture
 
-from src.utils import (
-    find_executable,
-    is_executable,
-    split_exec_options,
-    escaping_end,
-)
+import importlib.util
+from pathlib import Path
+
+_utils_path = Path(__file__).parent.parent / "src" / "anki-external-editor" / "utils.py"
+_spec = importlib.util.spec_from_file_location("anki_external_editor_utils", _utils_path)
+_utils = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_utils)
+
+find_executable = _utils.find_executable
+is_executable = _utils.is_executable
+split_exec_options = _utils.split_exec_options
+escaping_end = _utils.escaping_end
 
 
 WINDOWS_PATHEXT = ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH"
@@ -43,6 +49,24 @@ OPTIONS = [
     {"cmd": "vim -gf", "executable": "vim", "options": " -gf"},
     {"cmd": "vim -g -f", "executable": "vim", "options": " -g -f"},
     {"cmd": r"code\ editor -f", "executable": "code editor", "options": " -f"},
+]
+
+WINDOWS_OPTIONS = [
+    {
+        "cmd": r"C:\Editor\foo.exe --wait",
+        "executable": r"C:\Editor\foo.exe",
+        "options": " --wait",
+    },
+    {
+        "cmd": r'"C:\Program Files\Editor\foo.exe" --wait',
+        "executable": r"C:\Program Files\Editor\foo.exe",
+        "options": " --wait",
+    },
+    {
+        "cmd": "editpadpro8.exe",
+        "executable": "editpadpro8.exe",
+        "options": "",
+    },
 ]
 
 
@@ -84,6 +108,23 @@ def test__split_exec_options(with_options):
     cmd = with_options["cmd"]
     good_executable = with_options["executable"]
     good_options = with_options["options"]
+
+    executable, options = split_exec_options(cmd)
+
+    assert good_executable == executable
+    assert good_options == options
+
+
+@fixture(params=WINDOWS_OPTIONS)
+def windows_options(request, mocker):
+    mocker.patch.object(_utils.sys, "platform", "win32")
+    return request.param
+
+
+def test__split_exec_options__windows(windows_options):
+    cmd = windows_options["cmd"]
+    good_executable = windows_options["executable"]
+    good_options = windows_options["options"]
 
     executable, options = split_exec_options(cmd)
 
